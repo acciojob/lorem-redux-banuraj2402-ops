@@ -1,49 +1,45 @@
-import { useEffect } from 'react';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLorem } from './store/actions.js';
+import { fetchLorem } from '../store/actions.js';
 import './../styles/App.css';
 
-function App() {
 const App = () => {
   const dispatch = useDispatch();
   const { loading, error, title, body } = useSelector((state) => state.lorem);
 
+  useEffect(() => {
+    dispatch(fetchLorem());
   }, [dispatch]);
 
-  return (
-    <main className="app-shell">
-      <section className="content-panel" aria-labelledby="page-title">
-        <h1 id="page-title">Lorem Redux Output</h1>
-    <div>
-      {/* Do not remove the main div */}
-      <main className="app-shell">
-        <section className="content-panel" aria-labelledby="page-title">
-          <h1 id="page-title">Lorem Redux Output</h1>
+  let content = null;
 
-        {loading && <p className="status">Loading...</p>}
-        {error && !loading && <p className="status error">{error}</p>}
-        {!loading && !error && (
-          <p className="lorem-content">
-            <strong>{title}</strong>
-            <span>{body}</span>
-          </p>
-        )}
-      </section>
-    </main>
-          {loading && <p className="status">Loading...</p>}
-          {error && !loading && <p className="status error">{error}</p>}
-          {!loading && !error && (
-            <p className="lorem-content">
-              <strong>{title}</strong>
-              <span>{body}</span>
-            </p>
-          )}
-        </section>
-      </main>
-    </div>
+  if (loading) {
+    content = React.createElement('p', { className: 'status' }, 'Loading...');
+  } else if (error) {
+    content = React.createElement('p', { className: 'status error' }, error);
+  } else {
+    content = React.createElement(
+      'p',
+      { className: 'lorem-content' },
+      React.createElement('strong', null, title),
+      React.createElement('span', null, body)
+    );
+  }
+
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'main',
+      { className: 'app-shell' },
+      React.createElement(
+        'section',
+        { className: 'content-panel', 'aria-labelledby': 'page-title' },
+        React.createElement('h1', { id: 'page-title' }, 'Lorem Redux Output'),
+        content
+      )
+    )
   );
-}
 };
 
 export default App;
